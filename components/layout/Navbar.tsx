@@ -27,12 +27,26 @@ export default function Navbar() {
       }`}>
         <div className="container flex justify-between items-center w-full px-6 mx-auto">
           <Link href="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-navy rounded-lg flex items-center justify-center text-gold font-serif text-2xl font-bold">
-              P
-            </div>
-            <div className="flex flex-col">
-              <span className="text-base font-bold text-navy leading-none">Padmashree College</span>
-              <span className="text-[11px] text-gray-600 font-medium">Tinkune, Kathmandu</span>
+            <img 
+              src="/logo.png" 
+              alt="Padmashree College" 
+              className="h-10 w-auto object-contain hidden"
+              onLoad={(e) => {
+                e.currentTarget.classList.remove('hidden');
+                const sibling = e.currentTarget.nextElementSibling as HTMLElement;
+                if (sibling) {
+                  sibling.style.display = 'none';
+                }
+              }}
+            />
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-navy rounded-lg flex items-center justify-center text-gold font-serif text-2xl font-bold">
+                P
+              </div>
+              <div className="flex flex-col">
+                <span className="text-base font-bold text-navy leading-none">Padmashree College</span>
+                <span className="text-[11px] text-gray-600 font-medium">Tinkune, Kathmandu</span>
+              </div>
             </div>
           </Link>
 
