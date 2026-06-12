@@ -38,7 +38,7 @@ export default function AnnouncementBar() {
             ))
           ) : (
             <>
-              <span className="inline-block pr-12 text-gray-200">Admission Open 2083 — No Entrance Exam for BIT</span>
+              <span className="inline-block pr-12 text-gray-200">Admission Open 2027 — No Entrance Exam for BIT</span>
               <span className="inline-block pr-12 text-gray-200">Final Exam Timetable July 2026 Published</span>
               <span className="inline-block pr-12 text-gray-200">Annual Journal of Technology Innovation Released</span>
               <span className="inline-block pr-12 text-gray-200">B.Tech Food Second Semester Classes Commence Soon</span>

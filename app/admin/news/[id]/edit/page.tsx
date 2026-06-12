@@ -174,7 +174,7 @@ export default function AdminEditNewsPage() {
                 required
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. Padmashree BIT Convocation 2083"
+                placeholder="e.g. Padmashree BIT Convocation 2027"
                 className="border border-gray-200 focus:border-gold rounded-lg px-4 py-2.5 text-xs transition-colors"
               />
             </div>

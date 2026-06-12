@@ -58,7 +58,7 @@ export default async function ProgramDetailPage({ params }: PageProps) {
           <div className="bg-navy-mid border border-white/5 rounded-2xl p-8 text-center mt-6 flex flex-col items-center gap-4 text-white">
             <h4 className="text-lg font-bold text-white leading-tight">Ready to Take the Next Step?</h4>
             <p className="text-xs text-gray-400 max-w-md">
-              Secure your seats for the upcoming 2083 academic year. No entrance examinations required for BIT candidates.
+              Secure your seats for the upcoming 2027 academic year. No entrance examinations required for BIT candidates.
             </p>
             <Link href="/apply" className="bg-gold text-navy font-semibold px-8 py-3 rounded-md hover:bg-gold-light transition-all shadow-md text-xs mt-2 inline-block">
               Apply Now →

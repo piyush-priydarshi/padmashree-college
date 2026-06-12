@@ -61,7 +61,7 @@ export default function ApplyPage() {
       <section className="bg-navy py-20 px-6 flex-grow flex items-center justify-center bg-[radial-gradient(circle_at_50%_120%,rgba(245,166,35,0.06)_0%,transparent_60%)]">
         <div className="w-full max-w-lg bg-navy-mid border border-white/8 p-8 md:p-10 rounded-2xl shadow-2xl relative z-10 my-8">
           <div className="text-center mb-8">
-            <span className="text-xs font-semibold tracking-widest text-gold uppercase">Admission 2083</span>
+            <span className="text-xs font-semibold tracking-widest text-gold uppercase">Admission 2027</span>
             <h1 className="text-2xl md:text-3xl font-serif font-bold text-white mt-2">Apply Online</h1>
             <p className="text-xs text-gray-400 mt-2">Fill the form below to initiate your registration process.</p>
           </div>

@@ -51,7 +51,7 @@ export default function CTASection() {
           Start Your Journey Today
         </h2>
         <p className="text-sm md:text-base text-gray-400 max-w-xl mx-auto mb-10 leading-relaxed">
-          Join Padmashree College for the 2083 academic intake. No entrance exam is required for the BIT program. Merit-based scholarships are open for early applicants.
+          Join Padmashree College for the 2027 academic intake. No entrance exam is required for the BIT program. Merit-based scholarships are open for early applicants.
         </p>
 
         <div className="flex justify-center gap-4 mb-12 flex-wrap">
@@ -75,7 +75,7 @@ export default function CTASection() {
 
         <div className="flex justify-center gap-4 flex-wrap">
           <Link href="/apply" className="bg-gold text-navy font-semibold px-8 py-3.5 rounded-md hover:bg-gold-light transition-all shadow-md hover:-translate-y-0.5 text-sm">
-            Apply Now — 2083 →
+            Apply Now — 2027 →
           </Link>
           <Link href="/contact" className="border border-white/20 text-white font-semibold px-8 py-3.5 rounded-md hover:bg-white/5 transition-all hover:-translate-y-0.5 text-sm">
             Schedule a Campus Visit

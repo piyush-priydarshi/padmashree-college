@@ -22,6 +22,7 @@
   --animate-fadeInUp: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   --animate-fadeInRight: fadeInRight 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   --animate-glow-pulse: glow-pulse 2s infinite;
+  --animate-kenBurns: kenBurns 15s ease-in-out infinite alternate;
   
   @keyframes horizontal-ticker {
     0% { transform: translateX(0); }
@@ -54,10 +55,29 @@
     90% { opacity: 0.5; }
     100% { transform: translateY(-10vh) translateX(60px); opacity: 0; }
   }
+  @keyframes kenBurns {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.08); }
+  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-delay: -1ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    background-attachment: scroll !important;
+    transition-delay: 0s !important;
+    transition-duration: 0s !important;
+  }
+  .animate-kenBurns {
+    transform: none !important;
+    animation: none !important;
+  }
 }

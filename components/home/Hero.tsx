@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Hero() {
   const [particles, setParticles] = useState<any[]>([]);
@@ -21,8 +22,27 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative min-h-screen bg-navy flex items-center justify-center py-24 px-6 overflow-hidden bg-[radial-gradient(circle_at_90%_10%,rgba(245,166,35,0.12)_0%,transparent_60%)] bg-[linear-gradient(rgba(245,166,35,0.03)_1px,transparent_1px)] bg-[linear-gradient(90deg,rgba(245,166,35,0.03)_1px,transparent_1px)] bg-[size:100%_100%,60px_60px,60px_60px]">
-      <div className="absolute inset-0 pointer-events-none z-1">
+    <section className="relative min-h-screen bg-navy flex items-center justify-center py-24 px-6 overflow-hidden">
+      {/* Background Image with Ken Burns Zoom Effect */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <Image
+          src="/images/hero-bg.jpg"
+          alt="Padmashree College Campus"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center animate-kenBurns"
+        />
+      </div>
+
+      {/* Brand-Colored Gradient Overlays for High Contrast */}
+      <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/80 to-navy-mid/65 z-1" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#050e1c] via-[#050e1c]/40 to-transparent z-1" />
+
+      {/* Accent Light Ray */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_90%_10%,rgba(245,166,35,0.06)_0%,transparent_60%)] pointer-events-none z-1" />
+
+      <div className="absolute inset-0 pointer-events-none z-2">
         {particles.map((p) => (
           <span
             key={p.id}
@@ -41,7 +61,7 @@ export default function Hero() {
       <div className="container mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-2 items-center gap-16 relative z-10 w-full">
         <div className="flex flex-col items-start text-left">
           <div className="border border-gold text-gold px-3.5 py-1.5 rounded-full text-xs font-semibold tracking-wider mb-6 animate-fadeInUp">
-            🎓 Admission Open 2083
+            🎓 Admission Open 2027
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white mb-6 leading-tight animate-fadeInUp [animation-delay:0.2s]">
             Shape Your <span className="text-gold">Future</span> at Padmashree

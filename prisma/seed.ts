@@ -135,10 +135,10 @@ async function main() {
   // 4. Seed News
   const newsItems = [
     {
-      title: "Admissions Open for Academic Year 2083",
-      slug: "admissions-open-academic-year-2083",
-      content: "<p>Padmashree College is proud to announce admissions open for the 2083 academic batch. Join our prestigious BIT, BCA, BBA, BHM, and B.Tech Food courses affiliated with Tribhuvan University and Nilai University, Malaysia.</p><p>We focus on quality, professional infrastructure, and industry placement.</p>",
-      excerpt: "Padmashree College announces admissions open for the upcoming 2083 academic year across all major courses.",
+      title: "Admissions Open for Academic Year 2027",
+      slug: "admissions-open-academic-year-2027",
+      content: "<p>Padmashree College is proud to announce admissions open for the 2027 academic batch. Join our prestigious BIT, BCA, BBA, BHM, and B.Tech Food courses affiliated with Tribhuvan University and Nilai University, Malaysia.</p><p>We focus on quality, professional infrastructure, and industry placement.</p>",
+      excerpt: "Padmashree College announces admissions open for the upcoming 2027 academic year across all major courses.",
       coverImage: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=800",
       category: NewsCategory.ANNOUNCEMENT,
       published: true,

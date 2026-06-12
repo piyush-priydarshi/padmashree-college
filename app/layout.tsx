@@ -18,7 +18,7 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: 'Padmashree College | BIT · BCA · BBA · BHM · B.Tech',
-  description: 'Padmashree College Tinkune offers BIT, BBA, BHM, BCA and B.Tech Food. Admission open 2083. No entrance exam for BIT.',
+  description: 'Padmashree College Tinkune offers BIT, BBA, BHM, BCA and B.Tech Food. Admission open 2027. No entrance exam for BIT.',
 };
 
 export default function RootLayout({
