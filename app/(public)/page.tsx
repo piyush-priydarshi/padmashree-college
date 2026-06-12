@@ -6,6 +6,7 @@ import AboutSection from '@/components/home/AboutSection';
 import FeaturesSection from '@/components/home/FeaturesSection';
 import NewsSection from '@/components/home/NewsSection';
 import EventsSection from '@/components/home/EventsSection';
+import GalleryPreview from '@/components/home/GalleryPreview';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
 import CTASection from '@/components/home/CTASection';
 
@@ -19,6 +20,7 @@ export default function HomePage() {
       <FeaturesSection />
       <NewsSection />
       <EventsSection />
+      <GalleryPreview />
       <TestimonialsSection />
       <CTASection />
     </>

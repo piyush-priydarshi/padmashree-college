@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, NewsCategory } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 import * as bcrypt from 'bcrypt';
@@ -12,13 +12,14 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
+  // 1. Seed Admin
   const adminEmail = "admin@padmashreecollege.edu.np";
   const existingAdmin = await prisma.admin.findUnique({
     where: { email: adminEmail }
   });
 
   if (!existingAdmin) {
-    const hashedPassword = await bcrypt.hash("admin123", 10);
+    const hashedPassword = await bcrypt.hash("PadmashreeAdmin123!", 10);
     await prisma.admin.create({
       data: {
         email: adminEmail,
@@ -28,6 +29,7 @@ async function main() {
     });
   }
 
+  // 2. Seed Programs
   const programs = [
     {
       code: "BIT",
@@ -89,6 +91,7 @@ async function main() {
     });
   }
 
+  // 3. Seed Testimonials
   const testimonials = [
     {
       name: "Ushna Khadka",
@@ -121,22 +124,6 @@ async function main() {
       quote: "Studying IT at Padmashree helped me gain practical experience early. No entrance exam restrictions helped me focus on direct coding skills.",
       published: true,
       order: 4
-    },
-    {
-      name: "Saneep Shrestha",
-      initials: "SS",
-      program: "BABHM",
-      quote: "The curriculum keeps up with international standards, helping us prepare for jobs in the international market from day one.",
-      published: true,
-      order: 5
-    },
-    {
-      name: "Sushil Thapa Magar",
-      initials: "SM",
-      program: "BABHM",
-      quote: "Padmashree is like a second home. The dynamic student community, sports leagues, and continuous encouragement shaped my leadership traits.",
-      published: true,
-      order: 6
     }
   ];
 
@@ -145,54 +132,35 @@ async function main() {
     await prisma.testimonial.create({ data: test });
   }
 
+  // 4. Seed News
   const newsItems = [
     {
-      title: "Admission Open 2083 — No Entrance Exam for BIT",
-      slug: "admission-open-2083-no-entrance-exam-for-bit",
-      excerpt: "Padmashree College announces admissions open for the 2083 batch. Learn about our flexible BIT intake paths.",
-      content: "We are excited to announce that admission is now open for the 2083 academic session. Following modern learning standards, the BIT program does not require an entrance exam, enabling candidates with coding passion to apply directly based on their academic qualifications.",
-      category: "Admissions",
-      published: true
+      title: "Admissions Open for Academic Year 2083",
+      slug: "admissions-open-academic-year-2083",
+      content: "<p>Padmashree College is proud to announce admissions open for the 2083 academic batch. Join our prestigious BIT, BCA, BBA, BHM, and B.Tech Food courses affiliated with Tribhuvan University and Nilai University, Malaysia.</p><p>We focus on quality, professional infrastructure, and industry placement.</p>",
+      excerpt: "Padmashree College announces admissions open for the upcoming 2083 academic year across all major courses.",
+      coverImage: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=800",
+      category: NewsCategory.ANNOUNCEMENT,
+      published: true,
     },
     {
-      title: "Final Exam Timetable July 2026 Published",
-      slug: "final-exam-timetable-july-2026-published",
-      excerpt: "The exam schedules for July 2026 have been published for all departments. Check yours now.",
-      content: "All students are notified that the final examinations for the semester starting July 2026 will commence on July 10, 2026. Detail sheets are available at the administration office and down on the student portal downloads page.",
-      category: "Academic",
-      published: true
+      title: "Annual Tech Innovation and Food Exhibition 2026",
+      slug: "annual-tech-innovation-food-exhibition-2026",
+      content: "<p>Join us for the grand annual exhibition where our BIT and Food Tech students demonstrate live research models, hardware setups, and food quality systems. The event is open to parents, alumni, and industry delegates.</p>",
+      excerpt: "Experience cutting edge IT solutions and food technology models developed by our brilliant students.",
+      coverImage: "https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=800",
+      category: NewsCategory.EVENT,
+      eventDate: new Date("2026-07-15T10:00:00Z"),
+      published: true,
     },
     {
-      title: "Annual Journal of Technology Innovation Released",
-      slug: "annual-journal-of-technology-innovation-released",
-      excerpt: "The latest volume of technology innovation and food science research is now available in the library.",
-      content: "Our academic committee has officially released the fifth volume of the Padmashree Research Journal, showcasing articles in cloud computing, modern hospitality service layouts, and food technology innovation.",
-      category: "Research",
-      published: true
-    },
-    {
-      title: "B.Tech Food Second Semester Classes Commence",
-      slug: "btech-food-second-semester-classes-commence",
-      excerpt: "Second-semester classes for Food Technology will begin next week. Read for class logs.",
-      content: "All B.Tech Food students of the second semester are requested to note that classes will start on Monday. The new laboratory schedules and thesis group divisions have been updated on the notice board.",
-      category: "Academic",
-      published: true
-    },
-    {
-      title: "Thesis Defense Scheduled for Final Year Candidates",
-      slug: "thesis-defense-scheduled-final-year",
-      excerpt: "Final year IT and Food Science candidates must submit draft copies before June 25.",
-      content: "The academic board has scheduled final thesis defense schedules from June 28 to June 30. Ensure all external mentor sign-offs are completed before submitting the bound copies to the department head.",
-      category: "Academic",
-      published: true
-    },
-    {
-      title: "Mid Term Examination Schedule Announced",
-      slug: "mid-term-exam-schedule-announced",
-      excerpt: "Mid-term evaluations begin mid-next month. Prepare accordingly.",
-      content: "The mid-term assessments for all programs will run for one week starting from the 15th of next month. Attendance criteria of 75% is strictly mandatory to appear in evaluations.",
-      category: "Academic",
-      published: true
+      title: "Nilai University MOU Renewal Ceremony",
+      slug: "nilai-university-mou-renewal-ceremony",
+      content: "<p>We have successfully renewed our corporate partnership with Nilai University, Malaysia, guaranteeing continued international pathways, credit transfer facilities, and direct internships for BIT, BBA, and BHM students.</p>",
+      excerpt: "Padmashree College strengthens global affiliation by renewing its pathway agreement with Nilai University.",
+      coverImage: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=800",
+      category: NewsCategory.ANNOUNCEMENT,
+      published: true,
     }
   ];
 
@@ -201,47 +169,20 @@ async function main() {
     await prisma.news.create({ data: news });
   }
 
+  // 5. Seed Events (Prisma original event model)
   const events = [
     {
       title: "Bagmati Cleaning Campaign",
       description: "A community clean-up drive organized by the student council to preserve the environment.",
       category: "Community",
-      eventDate: new Date("2024-11-15T09:00:00Z"),
+      eventDate: new Date("2026-11-15T09:00:00Z"),
       published: true
     },
     {
       title: "Intra-College Futsal Tournament",
       description: "The annual sports meet with intense matches among various semester groups.",
       category: "Sports",
-      eventDate: new Date("2024-11-20T10:00:00Z"),
-      published: true
-    },
-    {
-      title: "The Alpha's Presents Workshop",
-      description: "An intensive coding and web technologies workshop led by senior software developers.",
-      category: "Academic",
-      eventDate: new Date("2024-11-25T13:00:00Z"),
-      published: true
-    },
-    {
-      title: "Food Safety & Labelling Program",
-      description: "A research-focused session demonstrating practical guidelines for nutrition control.",
-      category: "Academic",
-      eventDate: new Date("2023-10-12T11:00:00Z"),
-      published: true
-    },
-    {
-      title: "CO-OP Program with eSewa",
-      description: "Signing and orientation ceremony for our cooperative intern placement scheme with eSewa.",
-      category: "Academic",
-      eventDate: new Date("2023-09-05T10:00:00Z"),
-      published: true
-    },
-    {
-      title: "Project Sahara Clean Drive",
-      description: "Social outreach and cleaning campaign led by the students of BHM and BBA.",
-      category: "Community",
-      eventDate: new Date("2024-11-30T09:00:00Z"),
+      eventDate: new Date("2026-11-20T10:00:00Z"),
       published: true
     }
   ];
@@ -251,6 +192,54 @@ async function main() {
     await prisma.event.create({ data: ev });
   }
 
+  // 6. Seed Gallery Albums & Photos
+  await prisma.galleryAlbum.deleteMany();
+  
+  const album1 = await prisma.galleryAlbum.create({
+    data: {
+      title: "Campus Infrastructure",
+      description: "Explore the classrooms, lecture halls, and common spaces at Padmashree College.",
+      coverImage: "https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=800",
+      photos: {
+        create: [
+          {
+            imageUrl: "https://images.unsplash.com/photo-1498243691581-b145c3f54a5c?q=80&w=800",
+            caption: "Library and Reading Room",
+            order: 0,
+          },
+          {
+            imageUrl: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=800",
+            caption: "Main College Building",
+            order: 1,
+          }
+        ]
+      }
+    }
+  });
+
+  const album2 = await prisma.galleryAlbum.create({
+    data: {
+      title: "Advanced Laboratories",
+      description: "Step inside our state-of-the-art computer networks and culinary labs.",
+      coverImage: "https://images.unsplash.com/photo-1581092921461-eab62e97a780?q=80&w=800",
+      photos: {
+        create: [
+          {
+            imageUrl: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=800",
+            caption: "Modern Computer Lab",
+            order: 0,
+          },
+          {
+            imageUrl: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&w=800",
+            caption: "BHM Training Kitchen",
+            order: 1,
+          }
+        ]
+      }
+    }
+  });
+
+  // 7. Seed Settings
   const settings = [
     { key: "college_name", value: "Padmashree College" },
     { key: "address", value: "Tinkune, Kathmandu, Nepal" },

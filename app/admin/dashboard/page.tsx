@@ -10,6 +10,8 @@ interface DashboardStats {
   unreadMessages: number;
   subscribers: number;
   news: number;
+  totalAlbums: number;
+  totalPhotos: number;
 }
 
 interface Application {
@@ -48,7 +50,11 @@ export default function DashboardPage() {
   }, []);
 
   if (loading) {
-    return <LoadingSpinner />;
+    return (
+      <div className="py-12 flex justify-center">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   const getStatusColor = (status: string) => {
@@ -69,53 +75,72 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="p-6 flex flex-col justify-between hover:shadow-md transition-shadow" hoverable={false}>
-          <div className="flex justify-between items-center mb-4">
-            <span className="text-sm font-semibold text-gray-500">Total Applications</span>
-            <span className="text-2xl">🎓</span>
+      {/* Overview Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-5">
+        <Card className="p-5 flex flex-col justify-between hover:shadow-md transition-shadow bg-white border border-gray-200" hoverable={false}>
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-xs font-semibold text-gray-500">Applications</span>
+            <span className="text-xl">🎓</span>
           </div>
-          <span className="text-3xl font-bold text-navy">{stats?.applications || 0}</span>
+          <span className="text-2xl font-bold text-navy">{stats?.applications || 0}</span>
         </Card>
 
-        <Card className="p-6 flex flex-col justify-between hover:shadow-md transition-shadow" hoverable={false}>
-          <div className="flex justify-between items-center mb-4">
-            <span className="text-sm font-semibold text-gray-500">Unread Messages</span>
-            <span className="text-2xl">✉️</span>
+        <Card className="p-5 flex flex-col justify-between hover:shadow-md transition-shadow bg-white border border-gray-200" hoverable={false}>
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-xs font-semibold text-gray-500">Unread Msgs</span>
+            <span className="text-xl">✉️</span>
           </div>
-          <span className="text-3xl font-bold text-navy">{stats?.unreadMessages || 0}</span>
+          <span className="text-2xl font-bold text-navy">{stats?.unreadMessages || 0}</span>
         </Card>
 
-        <Card className="p-6 flex flex-col justify-between hover:shadow-md transition-shadow" hoverable={false}>
-          <div className="flex justify-between items-center mb-4">
-            <span className="text-sm font-semibold text-gray-500">Subscribers</span>
-            <span className="text-2xl">📢</span>
+        <Card className="p-5 flex flex-col justify-between hover:shadow-md transition-shadow bg-white border border-gray-200" hoverable={false}>
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-xs font-semibold text-gray-500">Subscribers</span>
+            <span className="text-xl">📢</span>
           </div>
-          <span className="text-3xl font-bold text-navy">{stats?.subscribers || 0}</span>
+          <span className="text-2xl font-bold text-navy">{stats?.subscribers || 0}</span>
         </Card>
 
-        <Card className="p-6 flex flex-col justify-between hover:shadow-md transition-shadow" hoverable={false}>
-          <div className="flex justify-between items-center mb-4">
-            <span className="text-sm font-semibold text-gray-500">Published News</span>
-            <span className="text-2xl">📰</span>
+        <Card className="p-5 flex flex-col justify-between hover:shadow-md transition-shadow bg-white border border-gray-200" hoverable={false}>
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-xs font-semibold text-gray-500">News Posts</span>
+            <span className="text-xl">📰</span>
           </div>
-          <span className="text-3xl font-bold text-navy">{stats?.news || 0}</span>
+          <span className="text-2xl font-bold text-navy">{stats?.news || 0}</span>
+        </Card>
+
+        <Card className="p-5 flex flex-col justify-between hover:shadow-md transition-shadow bg-white border border-gray-200" hoverable={false}>
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-xs font-semibold text-gray-500">Albums</span>
+            <span className="text-xl">📁</span>
+          </div>
+          <span className="text-2xl font-bold text-navy">{stats?.totalAlbums || 0}</span>
+        </Card>
+
+        <Card className="p-5 flex flex-col justify-between hover:shadow-md transition-shadow bg-white border border-gray-200" hoverable={false}>
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-xs font-semibold text-gray-500">Total Photos</span>
+            <span className="text-xl">🖼️</span>
+          </div>
+          <span className="text-2xl font-bold text-navy">{stats?.totalPhotos || 0}</span>
         </Card>
       </div>
 
-      <div className="flex gap-4 flex-wrap">
-        <Link href="/admin/news" className="bg-navy hover:bg-navy-light text-white text-xs font-semibold px-4 py-3 rounded-lg shadow-sm">
-          ✍️ Write News
+      {/* Quick Action Links */}
+      <div className="flex gap-3 flex-wrap">
+        <Link href="/admin/news/new" className="bg-navy hover:bg-navy-light text-white text-xs font-semibold px-4 py-2.5 rounded-lg shadow-sm">
+          ✍️ Add News Notice
         </Link>
-        <Link href="/admin/events" className="bg-navy hover:bg-navy-light text-white text-xs font-semibold px-4 py-3 rounded-lg shadow-sm">
-          📅 Add Event
+        <Link href="/admin/gallery" className="bg-navy hover:bg-navy-light text-white text-xs font-semibold px-4 py-2.5 rounded-lg shadow-sm">
+          🖼️ Create Album
         </Link>
-        <Link href="/admin/applications" className="bg-navy hover:bg-navy-light text-white text-xs font-semibold px-4 py-3 rounded-lg shadow-sm">
+        <Link href="/admin/applications" className="bg-navy hover:bg-navy-light text-white text-xs font-semibold px-4 py-2.5 rounded-lg shadow-sm">
           👀 View Applications
         </Link>
       </div>
 
-      <Card className="p-6 overflow-hidden flex flex-col" hoverable={false}>
+      {/* Recent Applications Table */}
+      <Card className="p-6 overflow-hidden flex flex-col bg-white border border-gray-200" hoverable={false}>
         <h3 className="text-base font-bold text-navy mb-4">Recent Admission Applications</h3>
         <div className="overflow-x-auto w-full">
           <table className="min-w-full text-left text-xs border-collapse">

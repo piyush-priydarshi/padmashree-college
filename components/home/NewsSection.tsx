@@ -31,12 +31,7 @@ export default function NewsSection() {
   }, []);
 
   const getCategoryIcon = (category: string) => {
-    switch (category.toLowerCase()) {
-      case 'academic': return '📋';
-      case 'research': return '📖';
-      case 'admissions': return '🎓';
-      default: return '📢';
-    }
+    return category === 'EVENT' ? '📅' : '📢';
   };
 
   const getFormatDate = (dateStr: string) => {

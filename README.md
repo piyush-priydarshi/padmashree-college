@@ -56,8 +56,10 @@ cp .env.example .env.local
 Open `.env.local` and input your actual credentials:
 - **DATABASE_URL**: The connection string for your PostgreSQL database.
 - **NEXTAUTH_SECRET**: Generate one by running `openssl rand -base64 32`.
+- **NEXTAUTH_URL**: Canonical root URL of the deployment (e.g., `http://localhost:3000` for local or your custom domain/Vercel URL for production).
 - **EMAIL_USER** & **EMAIL_PASS**: SMTP credentials for system alerts (e.g. Gmail App Passwords).
-- **CLOUDINARY_CLOUD_NAME**, **CLOUDINARY_API_KEY**, **CLOUDINARY_API_SECRET**: For gallery asset upload.
+- **CLOUDINARY_CLOUD_NAME**, **CLOUDINARY_API_KEY**, **CLOUDINARY_API_SECRET**: Credentials for Cloudinary image uploading.
+- **CLOUDINARY_UPLOAD_PRESET**: Unsigned or signed upload preset name configured in Cloudinary (required for direct frontend or serverless stream uploads).
 
 ### 4. Database Setup & Seeding
 Prisma manages the database schema and initialization. Generate the Prisma Client and run the database migration to build the PostgreSQL tables:
@@ -70,8 +72,14 @@ npm run prisma:migrate
 npm run prisma:seed
 ```
 
+#### Database Models Configuration
+Our database has been upgraded with the following structures in `prisma/schema.prisma`:
+- **GalleryAlbum**: Holds the metadata for photo galleries (`id`, `title`, `description`, `coverImage`, `createdAt`, `updatedAt`).
+- **GalleryPhoto**: Represents images nested inside an album (`id`, `albumId` referencing `GalleryAlbum` with cascade deletion, `imageUrl`, `caption`, `order` for drag/drop custom sequencing).
+- **News**: Stores announcements and events (`id`, `title`, `slug` unique, `content` supporting Tiptap Rich HTML, `excerpt`, `coverImage`, `category` supporting `ANNOUNCEMENT` or `EVENT`, `eventDate` required for events, `published` boolean, `createdAt`, `updatedAt`).
+
 #### Seed Admin Credentials
-- **Email**: `admin@padmashree.edu.np`
+- **Email**: `admin@padmashreecollege.edu.np`
 - **Password**: `PadmashreeAdmin123!`
 
 *(Make sure to change these credentials immediately upon logging into the admin console)*
@@ -124,8 +132,13 @@ padmashree-college/
 
 ### Web Server (Vercel)
 1. Import this repository into Vercel.
-2. Add all environment keys configured in `.env.local` to the Project Settings page.
+2. Add all environment keys configured in `.env.local` to the Vercel Environment Variables:
+   - `DATABASE_URL` (PostgreSQL connection string)
+   - `NEXTAUTH_SECRET` (custom JWT token signing secret)
+   - `NEXTAUTH_URL` (set to your canonical Vercel production domain, e.g. `https://your-app.vercel.app`)
+   - `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_PASS`, `ADMIN_EMAIL` (SMTP settings for dynamic alerts)
+   - `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, `CLOUDINARY_UPLOAD_PRESET` (Cloudinary integrations)
 3. Configure the Build Settings:
    - Framework preset: `Next.js`
-   - Build command: `prisma generate && next build`
+   - Build command: `npx prisma generate && npm run build`
 4. Deploy the repository.

@@ -9,14 +9,17 @@ interface NewsItem {
   id: string;
   title: string;
   slug: string;
-  excerpt: string;
-  category: string;
+  excerpt: string | null;
+  content: string;
+  category: 'ANNOUNCEMENT' | 'EVENT';
+  coverImage: string | null;
+  eventDate: string | null;
   createdAt: string;
 }
 
 export default function NewsPage() {
   const [news, setNews] = useState<NewsItem[]>([]);
-  const [activeCategory, setActiveCategory] = useState('All');
+  const [activeCategory, setActiveCategory] = useState<'All' | 'Announcement' | 'Event'>('All');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -29,7 +32,7 @@ export default function NewsPage() {
       .then((res) => res.json())
       .then((data) => {
         if (data && !data.error) {
-          setNews(data.news);
+          setNews(data.news || []);
           setTotalPages(data.pages || 1);
         }
       })
@@ -37,7 +40,7 @@ export default function NewsPage() {
       .finally(() => setLoading(false));
   }, [currentPage, activeCategory]);
 
-  const handleCategoryChange = (cat: string) => {
+  const handleCategoryChange = (cat: 'All' | 'Announcement' | 'Event') => {
     setActiveCategory(cat);
     setCurrentPage(1);
   };
@@ -51,12 +54,7 @@ export default function NewsPage() {
   };
 
   const getCategoryEmoji = (category: string) => {
-    switch (category.toLowerCase()) {
-      case 'academic': return '📋';
-      case 'research': return '📖';
-      case 'admissions': return '🎓';
-      default: return '📢';
-    }
+    return category === 'EVENT' ? '📅' : '📢';
   };
 
   return (
@@ -65,11 +63,13 @@ export default function NewsPage() {
         <div className="text-center mb-14">
           <span className="text-xs font-semibold tracking-widest text-gold uppercase">Latest Publications</span>
           <h1 className="text-3xl md:text-5xl font-serif font-bold text-navy mt-2">News & Announcements</h1>
-          <p className="text-xs md:text-sm text-gray-500 mt-2 max-w-md mx-auto">Stay up to date with the latest newsletters, admissions notices, and innovation logs.</p>
+          <p className="text-xs md:text-sm text-gray-500 mt-2 max-w-md mx-auto">
+            Stay up to date with the latest newsletters, announcements, and events at Padmashree College.
+          </p>
         </div>
 
         <div className="flex justify-center flex-wrap gap-2.5 mb-12">
-          {['All', 'Academic', 'Research', 'Admissions', 'General'].map((cat) => (
+          {(['All', 'Announcement', 'Event'] as const).map((cat) => (
             <button
               key={cat}
               onClick={() => handleCategoryChange(cat)}
@@ -79,30 +79,53 @@ export default function NewsPage() {
                   : 'bg-white border-gray-200 text-gray-600 hover:bg-navy hover:border-navy hover:text-white'
               }`}
             >
-              {cat}
+              {cat === 'All' ? 'All' : cat === 'Announcement' ? 'Announcements' : 'Events'}
             </button>
           ))}
         </div>
 
         {loading ? (
-          <LoadingSpinner />
+          <div className="py-12 flex justify-center">
+            <LoadingSpinner />
+          </div>
         ) : news.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
               {news.map((item) => (
-                <Card key={item.id} className="p-0 overflow-hidden flex flex-col justify-between hover:-translate-y-1.5 transition-all duration-300">
-                  <div className="h-44 bg-navy-light/10 flex items-center justify-center text-5xl relative">
-                    <span className="select-none">{getCategoryEmoji(item.category)}</span>
-                    <span className="absolute top-4 left-4 bg-gold text-navy text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-                      {item.category}
-                    </span>
-                  </div>
-                  <div className="p-6 flex-grow flex flex-col justify-between text-left">
-                    <div>
-                      <span className="text-[11px] text-gray-500 block mb-2 font-medium">{getFormatDate(item.createdAt)}</span>
-                      <h3 className="text-base font-bold text-navy mb-3 line-clamp-2 leading-snug">{item.title}</h3>
-                      <p className="text-xs text-gray-600 leading-relaxed line-clamp-3 mb-4">{item.excerpt}</p>
+                <Card key={item.id} className="p-0 overflow-hidden flex flex-col justify-between hover:-translate-y-1.5 transition-all duration-300 border border-gray-200 bg-white" hoverable={false}>
+                  <div>
+                    <div className="h-44 bg-navy-light/10 flex items-center justify-center relative overflow-hidden">
+                      {item.coverImage ? (
+                        <img src={item.coverImage} alt={item.title} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-5xl select-none">{getCategoryEmoji(item.category)}</span>
+                      )}
+                      <span className={`absolute top-4 left-4 text-white text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${
+                        item.category === 'EVENT' ? 'bg-gold text-navy' : 'bg-navy'
+                      }`}>
+                        {item.category}
+                      </span>
                     </div>
+                    <div className="p-6 text-left">
+                      <span className="text-[11px] text-gray-500 block mb-2 font-medium">
+                        {getFormatDate(item.createdAt)}
+                      </span>
+                      <h3 className="text-base font-bold text-navy mb-3 line-clamp-2 leading-snug">
+                        {item.title}
+                      </h3>
+                      {item.excerpt && (
+                        <p className="text-xs text-gray-600 leading-relaxed line-clamp-3 mb-4">
+                          {item.excerpt}
+                        </p>
+                      )}
+                      {item.category === 'EVENT' && item.eventDate && (
+                        <div className="mb-4 bg-gold-pale border border-gold/10 p-2 rounded-lg text-[10px] font-semibold text-navy flex items-center gap-1.5">
+                          🗓️ Event Date: {getFormatDate(item.eventDate)}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="p-6 pt-0 text-left">
                     <Link href={`/news/${item.slug}`} className="text-xs font-bold text-navy hover:text-gold transition-colors inline-flex items-center gap-1 cursor-pointer">
                       Read Full Article <span>→</span>
                     </Link>

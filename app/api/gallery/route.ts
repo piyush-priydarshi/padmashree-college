@@ -7,21 +7,34 @@ import cloudinary from '@/lib/cloudinary';
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const category = searchParams.get('category') || '';
+    const recent = searchParams.get('recent');
 
-    const where: any = {};
-    if (category && category !== 'all') {
-      where.category = category;
+    if (recent) {
+      const limit = parseInt(recent, 10) || 4;
+      const photos = await prisma.galleryPhoto.findMany({
+        orderBy: { createdAt: 'desc' },
+        take: limit,
+        include: {
+          album: {
+            select: { id: true, title: true }
+          }
+        }
+      });
+      return NextResponse.json(photos);
     }
 
-    const images = await prisma.galleryImage.findMany({
-      where,
-      orderBy: { createdAt: 'desc' },
+    const albums = await prisma.galleryAlbum.findMany({
+      include: {
+        _count: {
+          select: { photos: true }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
     });
 
-    return NextResponse.json(images);
+    return NextResponse.json(albums);
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch gallery images' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch albums' }, { status: 500 });
   }
 }
 
@@ -33,55 +46,59 @@ export async function POST(request: NextRequest) {
     }
 
     const contentType = request.headers.get('content-type') || '';
-    let url = '';
-    let caption = '';
-    let category = '';
+    let title = '';
+    let description = '';
+    let coverImage = '';
 
     if (contentType.includes('multipart/form-data')) {
       const formData = await request.formData();
-      const file = formData.get('file') as File;
-      caption = (formData.get('caption') as string) || '';
-      category = (formData.get('category') as string) || '';
+      title = (formData.get('title') as string) || '';
+      description = (formData.get('description') as string) || '';
+      const file = formData.get('file') as File | null;
 
-      if (!file || !category) {
-        return NextResponse.json({ error: 'Missing file or category' }, { status: 400 });
+      if (!title) {
+        return NextResponse.json({ error: 'Album title is required' }, { status: 400 });
       }
 
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
+      if (file && file.size > 0) {
+        const bytes = await file.arrayBuffer();
+        const buffer = Buffer.from(bytes);
 
-      const result: any = await new Promise((resolve, reject) => {
-        cloudinary.uploader.upload_stream(
-          { folder: 'padmashree-gallery' },
-          (error, res) => {
-            if (error) reject(error);
-            else resolve(res);
-          }
-        ).end(buffer);
-      });
-      url = result.secure_url;
+        const result: any = await new Promise((resolve, reject) => {
+          cloudinary.uploader.upload_stream(
+            { folder: 'padmashree-gallery/covers' },
+            (error, res) => {
+              if (error) reject(error);
+              else resolve(res);
+            }
+          ).end(buffer);
+        });
+        coverImage = result.secure_url;
+      } else {
+        coverImage = (formData.get('coverImage') as string) || '';
+      }
     } else {
       const body = await request.json();
-      url = body.url;
-      caption = body.caption || '';
-      category = body.category;
+      title = body.title;
+      description = body.description || '';
+      coverImage = body.coverImage;
     }
 
-    if (!url || !category) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    if (!title || !coverImage) {
+      return NextResponse.json({ error: 'Title and cover image are required' }, { status: 400 });
     }
 
-    const image = await prisma.galleryImage.create({
+    const album = await prisma.galleryAlbum.create({
       data: {
-        url,
-        caption,
-        category,
-      },
+        title,
+        description,
+        coverImage
+      }
     });
 
-    return NextResponse.json(image, { status: 201 });
+    return NextResponse.json(album, { status: 201 });
   } catch (error) {
-    console.error('Gallery upload error:', error);
-    return NextResponse.json({ error: 'Failed to upload image' }, { status: 500 });
+    console.error('Gallery Album creation error:', error);
+    return NextResponse.json({ error: 'Failed to create album' }, { status: 500 });
   }
 }

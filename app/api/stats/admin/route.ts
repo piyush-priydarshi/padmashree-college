@@ -10,11 +10,20 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const [applications, unreadMessages, subscribers, news] = await Promise.all([
+    const [
+      applications, 
+      unreadMessages, 
+      subscribers, 
+      news,
+      totalAlbums,
+      totalPhotos
+    ] = await Promise.all([
       prisma.application.count(),
       prisma.contactMessage.count({ where: { read: false } }),
       prisma.newsletterSubscriber.count({ where: { active: true } }),
-      prisma.news.count({ where: { published: true } }),
+      prisma.news.count(), // total news posts
+      prisma.galleryAlbum.count(), // total albums
+      prisma.galleryPhoto.count(), // total photos
     ]);
 
     return NextResponse.json({
@@ -22,6 +31,8 @@ export async function GET(request: NextRequest) {
       unreadMessages,
       subscribers,
       news,
+      totalAlbums,
+      totalPhotos,
     });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch admin stats' }, { status: 500 });

@@ -14,17 +14,23 @@ model Admin {
   createdAt DateTime @default(now())
 }
 
+enum NewsCategory {
+  ANNOUNCEMENT
+  EVENT
+}
+
 model News {
-  id          String   @id @default(cuid())
+  id          String       @id @default(cuid())
   title       String
-  slug        String   @unique
-  excerpt     String
-  content     String   @db.Text
-  category    String
-  imageUrl    String?
-  published   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  slug        String       @unique
+  content     String       @db.Text
+  excerpt     String?
+  coverImage  String?
+  category    NewsCategory
+  eventDate   DateTime?
+  published   Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }
 
 model Event {
@@ -91,12 +97,24 @@ model Testimonial {
   createdAt DateTime @default(now())
 }
 
-model GalleryImage {
-  id        String   @id @default(cuid())
-  url       String
-  caption   String?
-  category  String
-  createdAt DateTime @default(now())
+model GalleryAlbum {
+  id          String         @id @default(cuid())
+  title       String
+  description String?        @db.Text
+  coverImage  String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  photos      GalleryPhoto[]
+}
+
+model GalleryPhoto {
+  id         String       @id @default(cuid())
+  albumId    String
+  album      GalleryAlbum @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  imageUrl   String
+  caption    String?
+  order      Int          @default(0)
+  createdAt  DateTime     @default(now())
 }
 
 model SiteSetting {

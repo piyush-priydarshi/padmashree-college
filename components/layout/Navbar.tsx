@@ -60,6 +60,7 @@ export default function Navbar() {
 
             <Link href="/about" className="text-sm font-medium text-gray-800 hover:text-gold transition-colors">Student Life</Link>
             <Link href="/gallery" className="text-sm font-medium text-gray-800 hover:text-gold transition-colors">Gallery</Link>
+            <Link href="/news" className="text-sm font-medium text-gray-800 hover:text-gold transition-colors">News</Link>
             <Link href="/contact" className="text-sm font-medium text-gray-800 hover:text-gold transition-colors">Contact</Link>
           </nav>
 
@@ -119,6 +120,7 @@ export default function Navbar() {
 
             <Link href="/about" onClick={() => setMobileOpen(false)} className="text-xl font-bold text-white hover:text-gold transition-colors font-serif">Student Life</Link>
             <Link href="/gallery" onClick={() => setMobileOpen(false)} className="text-xl font-bold text-white hover:text-gold transition-colors font-serif">Gallery</Link>
+            <Link href="/news" onClick={() => setMobileOpen(false)} className="text-xl font-bold text-white hover:text-gold transition-colors font-serif">News</Link>
             <Link href="/contact" onClick={() => setMobileOpen(false)} className="text-xl font-bold text-white hover:text-gold transition-colors font-serif">Contact</Link>
           </div>
         </div>
