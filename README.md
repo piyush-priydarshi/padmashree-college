@@ -6,21 +6,10 @@ A modern, responsive, and full-stack institutional website developed for **Padma
 
 ## 🌐 Live Demo
 
-> https://YOUR-VERCEL-LINK.vercel.app
+>https://padmashree-college-tinkune-np.vercel.app/
 
 ---
 
-## 📸 Screenshots
-
-| Home | Programs |
-|------|----------|
-| ![Home](screenshots/home.png) | ![Programs](screenshots/programs.png) |
-
-| Gallery | Contact |
-|---------|---------|
-| ![Gallery](screenshots/gallery.png) | ![Contact](screenshots/contact.png) |
-
----
 
 ## ✨ Features
 
