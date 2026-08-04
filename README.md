@@ -132,7 +132,7 @@ npm run dev
 **Piyush Priyadarshi**
 
 - GitHub: https://github.com/piyush-priydarshi
-- LinkedIn: https://linkedin.com/in/YOUR-LINKEDIN
+
 
 ---
 
