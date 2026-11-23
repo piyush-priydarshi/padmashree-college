@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { NewsCategory, Prisma } from '@prisma/client';
+import { sanitizeHtml } from '@/lib/security';
 
 export async function GET(request: NextRequest) {
   try {
@@ -110,7 +111,7 @@ export async function POST(request: NextRequest) {
       data: {
         title,
         slug,
-        content,
+        content: sanitizeHtml(content),
         excerpt: excerpt || null,
         coverImage: coverImage || null,
         category: parsedCategory,

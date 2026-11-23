@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import cloudinary from '@/lib/cloudinary';
 import type { UploadApiResponse } from 'cloudinary';
+import { validateImageFile, isValidImageUrl } from '@/lib/security';
 
 export async function POST(
   request: NextRequest,
@@ -41,6 +42,11 @@ export async function POST(
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
 
+      const validation = validateImageFile(file, buffer);
+      if (!validation.valid) {
+        return NextResponse.json({ error: validation.error }, { status: 400 });
+      }
+
       const result = await new Promise<UploadApiResponse>((resolve, reject) => {
         cloudinary.uploader.upload_stream(
           { folder: `padmashree-gallery/${albumId}` },
@@ -59,6 +65,10 @@ export async function POST(
 
     if (!imageUrl) {
       return NextResponse.json({ error: 'Image URL is required' }, { status: 400 });
+    }
+
+    if (!isValidImageUrl(imageUrl)) {
+      return NextResponse.json({ error: 'Invalid image URL' }, { status: 400 });
     }
 
     // Determine the next order index

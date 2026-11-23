@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
+import { sanitizeHtml } from '@/lib/security';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -82,7 +83,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
           )}
           <div 
             className="text-sm text-gray-750 leading-relaxed whitespace-pre-wrap rich-text-content"
-            dangerouslySetInnerHTML={{ __html: article.content }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(article.content) }}
           />
         </div>
 

@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import cloudinary from '@/lib/cloudinary';
 import type { UploadApiResponse } from 'cloudinary';
+import { validateImageFile, isValidImageUrl } from '@/lib/security';
 
 export async function GET(request: NextRequest) {
   try {
@@ -65,6 +66,11 @@ export async function POST(request: NextRequest) {
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
+        const validation = validateImageFile(file, buffer);
+        if (!validation.valid) {
+          return NextResponse.json({ error: validation.error }, { status: 400 });
+        }
+
         const result = await new Promise<UploadApiResponse>((resolve, reject) => {
           cloudinary.uploader.upload_stream(
             { folder: 'padmashree-gallery/covers' },
@@ -87,6 +93,10 @@ export async function POST(request: NextRequest) {
 
     if (!title || !coverImage) {
       return NextResponse.json({ error: 'Title and cover image are required' }, { status: 400 });
+    }
+
+    if (!isValidImageUrl(coverImage)) {
+      return NextResponse.json({ error: 'Invalid cover image URL' }, { status: 400 });
     }
 
     const album = await prisma.galleryAlbum.create({

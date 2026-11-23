@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { NewsCategory, Prisma } from '@prisma/client';
+import { sanitizeHtml } from '@/lib/security';
 
 export async function GET(
   request: NextRequest,
@@ -21,6 +22,13 @@ export async function GET(
 
     if (!news) {
       return NextResponse.json({ error: 'News not found' }, { status: 404 });
+    }
+
+    if (!news.published) {
+      const session = await getServerSession(authOptions);
+      if (!session) {
+        return NextResponse.json({ error: 'News not found' }, { status: 404 });
+      }
     }
 
     return NextResponse.json(news);
@@ -59,7 +67,7 @@ export async function PUT(
     const updateData: Prisma.NewsUpdateInput = {};
 
     if (excerpt !== undefined) updateData.excerpt = excerpt || null;
-    if (content !== undefined) updateData.content = content;
+    if (content !== undefined) updateData.content = sanitizeHtml(content);
     if (coverImage !== undefined) updateData.coverImage = coverImage || null;
     if (published !== undefined) updateData.published = !!published;
 
