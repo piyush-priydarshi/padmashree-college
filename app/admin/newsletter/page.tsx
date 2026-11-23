@@ -27,25 +27,26 @@ export default function AdminNewsletterPage() {
 
   const [toastMsg, setToastMsg] = useState('');
   const [toastType, setToastType] = useState<'success' | 'error'>('success');
-
-  const loadSubscribers = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch('/api/newsletter/send'); // GET lists all subscribers
-      const data = await res.json();
-      if (!data.error) {
-        setSubscribers(data || []);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
-    loadSubscribers();
-  }, []);
+    let ignore = false;
+    fetch('/api/newsletter/send')
+      .then((res) => res.json())
+      .then((data) => {
+        if (!ignore && !data.error) {
+          setSubscribers(data || []);
+        }
+      })
+      .catch((err) => console.error(err))
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [refreshTrigger]);
 
   const handleToggleActive = async (sub: Subscriber) => {
     try {
@@ -57,7 +58,7 @@ export default function AdminNewsletterPage() {
       if (res.ok) {
         setToastMsg(`Subscriber ${sub.active ? 'deactivated' : 'activated'} successfully!`);
         setToastType('success');
-        loadSubscribers();
+        setRefreshTrigger((prev) => prev + 1);
       } else {
         setToastMsg('Failed to update status.');
         setToastType('error');
@@ -78,7 +79,7 @@ export default function AdminNewsletterPage() {
       if (res.ok) {
         setToastMsg('Subscriber removed successfully!');
         setToastType('success');
-        loadSubscribers();
+        setRefreshTrigger((prev) => prev + 1);
       } else {
         setToastMsg('Failed to remove subscriber.');
         setToastType('error');

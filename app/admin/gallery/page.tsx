@@ -34,25 +34,26 @@ export default function AdminGalleryAlbumsPage() {
   const [toastMsg, setToastMsg] = useState('');
   const [toastType, setToastType] = useState<'success' | 'error'>('success');
   const [submitting, setSubmitting] = useState(false);
-
-  const loadAlbums = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch('/api/gallery');
-      const data = await res.json();
-      if (!data.error) {
-        setAlbums(data || []);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
-    loadAlbums();
-  }, []);
+    let ignore = false;
+    fetch('/api/gallery')
+      .then((res) => res.json())
+      .then((data) => {
+        if (!ignore && !data.error) {
+          setAlbums(data || []);
+        }
+      })
+      .catch((err) => console.error(err))
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [refreshTrigger]);
 
   const handleOpenCreate = () => {
     setEditingAlbum(null);
@@ -82,7 +83,7 @@ export default function AdminGalleryAlbumsPage() {
       if (res.ok) {
         setToastMsg('Album deleted successfully!');
         setToastType('success');
-        loadAlbums();
+        setRefreshTrigger((prev) => prev + 1);
       } else {
         setToastMsg('Failed to delete album.');
         setToastType('error');
@@ -135,7 +136,7 @@ export default function AdminGalleryAlbumsPage() {
         setToastMsg(editingAlbum ? 'Album updated successfully!' : 'Album created successfully!');
         setToastType('success');
         setIsModalOpen(false);
-        loadAlbums();
+        setRefreshTrigger((prev) => prev + 1);
       } else {
         setToastMsg(data.error || 'Failed to save album.');
         setToastType('error');
@@ -212,7 +213,7 @@ export default function AdminGalleryAlbumsPage() {
         </div>
       ) : (
         <div className="py-12 text-center text-gray-500 text-sm bg-white border border-gray-200 rounded-2xl shadow-sm">
-          No photo albums found. Click "+ Create Album" to start.
+          No photo albums found. Click &quot;+ Create Album&quot; to start.
         </div>
       )}
 

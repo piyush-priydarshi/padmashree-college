@@ -15,7 +15,6 @@ const StatItem: React.FC<StatItemProps> = ({ target, suffix, label, trigger }) =
 
   useEffect(() => {
     if (!trigger) return;
-    let start = 0;
     const duration = 2000;
     const startTime = performance.now();
 

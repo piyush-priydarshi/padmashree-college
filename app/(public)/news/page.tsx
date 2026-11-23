@@ -27,7 +27,6 @@ export default function NewsPage() {
   const limit = 6;
 
   useEffect(() => {
-    setLoading(true);
     fetch(`/api/news?page=${currentPage}&limit=${limit}&category=${activeCategory}`)
       .then((res) => res.json())
       .then((data) => {
@@ -41,6 +40,7 @@ export default function NewsPage() {
   }, [currentPage, activeCategory]);
 
   const handleCategoryChange = (cat: 'All' | 'Announcement' | 'Event') => {
+    setLoading(true);
     setActiveCategory(cat);
     setCurrentPage(1);
   };
@@ -138,7 +138,10 @@ export default function NewsPage() {
               <div className="flex justify-center items-center gap-4">
                 <button
                   disabled={currentPage === 1}
-                  onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                  onClick={() => {
+                    setLoading(true);
+                    setCurrentPage((p) => Math.max(p - 1, 1));
+                  }}
                   className="bg-white border border-gray-200 px-4 py-2 rounded-md text-xs font-semibold hover:bg-gray-50 disabled:opacity-50 cursor-pointer"
                 >
                   Previous
@@ -148,7 +151,10 @@ export default function NewsPage() {
                 </span>
                 <button
                   disabled={currentPage === totalPages}
-                  onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                  onClick={() => {
+                    setLoading(true);
+                    setCurrentPage((p) => Math.min(p + 1, totalPages));
+                  }}
                   className="bg-white border border-gray-200 px-4 py-2 rounded-md text-xs font-semibold hover:bg-gray-50 disabled:opacity-50 cursor-pointer"
                 >
                   Next

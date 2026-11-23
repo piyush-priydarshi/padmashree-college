@@ -22,25 +22,26 @@ export default function AdminNewsPage() {
   const [loading, setLoading] = useState(true);
   const [toastMsg, setToastMsg] = useState('');
   const [toastType, setToastType] = useState<'success' | 'error'>('success');
-
-  const loadNews = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch('/api/news?admin=true&limit=100');
-      const data = await res.json();
-      if (!data.error) {
-        setNewsList(data.news || []);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
-    loadNews();
-  }, []);
+    let ignore = false;
+    fetch('/api/news?admin=true&limit=100')
+      .then((res) => res.json())
+      .then((data) => {
+        if (!ignore && !data.error) {
+          setNewsList(data.news || []);
+        }
+      })
+      .catch((err) => console.error(err))
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [refreshTrigger]);
 
   const handleTogglePublished = async (item: NewsItem) => {
     try {
@@ -52,7 +53,7 @@ export default function AdminNewsPage() {
       if (res.ok) {
         setToastMsg(`News ${item.published ? 'saved as draft' : 'published'} successfully!`);
         setToastType('success');
-        loadNews();
+        setRefreshTrigger((prev) => prev + 1);
       } else {
         setToastMsg('Failed to update publication status.');
         setToastType('error');
@@ -71,7 +72,7 @@ export default function AdminNewsPage() {
       if (res.ok) {
         setToastMsg('News post deleted successfully!');
         setToastType('success');
-        loadNews();
+        setRefreshTrigger((prev) => prev + 1);
       } else {
         setToastMsg('Failed to delete news post.');
         setToastType('error');
@@ -166,7 +167,7 @@ export default function AdminNewsPage() {
                 ) : (
                   <tr>
                     <td colSpan={6} className="p-6 text-center text-gray-500">
-                      No news posts found. Click "+ Create News Post" to start.
+                      No news posts found. Click &quot;+ Create News Post&quot; to start.
                     </td>
                   </tr>
                 )}

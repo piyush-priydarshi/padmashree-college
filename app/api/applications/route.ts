@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { sendMail } from '@/lib/email';
@@ -14,7 +15,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status') || '';
 
-    const where: any = {};
+    const where: Prisma.ApplicationWhereInput = {};
     if (status && status !== 'all') {
       where.status = status;
     }

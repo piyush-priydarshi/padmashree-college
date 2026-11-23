@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { NewsCategory } from '@prisma/client';
+import { NewsCategory, Prisma } from '@prisma/client';
 
 export async function GET(
   request: NextRequest,
@@ -56,7 +56,7 @@ export async function PUT(
       return NextResponse.json({ error: 'News not found' }, { status: 404 });
     }
 
-    const updateData: any = {};
+    const updateData: Prisma.NewsUpdateInput = {};
 
     if (excerpt !== undefined) updateData.excerpt = excerpt || null;
     if (content !== undefined) updateData.content = content;
@@ -93,7 +93,7 @@ export async function PUT(
 
     if (title && title !== existingNews.title) {
       updateData.title = title;
-      let baseSlug = title
+      const baseSlug = title
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/(^-|-$)+/g, '');

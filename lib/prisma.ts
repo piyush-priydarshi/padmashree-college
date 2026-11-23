@@ -5,10 +5,6 @@ import { Pool } from 'pg';
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
 const getPrismaClient = () => {
-  if (typeof window !== 'undefined') {
-    return new PrismaClient() as any;
-  }
-  
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
     throw new Error('DATABASE_URL is not defined in environment variables.');

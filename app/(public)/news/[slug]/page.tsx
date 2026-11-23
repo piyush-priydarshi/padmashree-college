@@ -90,7 +90,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
           <div className="border-t border-gray-150 pt-12 mt-12 text-left">
             <h3 className="text-lg font-bold text-navy mb-6">Related Publications</h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              {related.map((item: any) => (
+              {related.map((item) => (
                 <Card key={item.id} className="p-0 overflow-hidden flex flex-col hover:-translate-y-1 transition-all duration-300 border border-gray-200 bg-white" hoverable={false}>
                   <div className="h-32 bg-navy-light/10 flex items-center justify-center text-4xl select-none overflow-hidden relative">
                     {item.coverImage ? (

@@ -60,7 +60,7 @@ export default function AboutSection() {
         <div className="flex flex-col items-start">
           <span className="text-xs font-semibold tracking-widest text-gold uppercase">Who We Are</span>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-navy mt-2 mb-6 leading-tight">
-            Shaping Nepal's Future Since 2007
+            Shaping Nepal&apos;s Future Since 2007
           </h2>
           <p className="text-sm md:text-base text-gray-600 mb-5 leading-relaxed">
             Founded in 2007, Padmashree College provides world-class higher education in IT, Hospitality, Business Management, and Food Technology. We strive to merge academic rigor with direct industrial relevance.

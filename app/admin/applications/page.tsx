@@ -27,24 +27,26 @@ export default function AdminApplicationsPage() {
   const [toastType, setToastType] = useState<'success' | 'error'>('success');
   const [updating, setUpdating] = useState(false);
 
-  const loadApplications = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/applications?status=${statusFilter}`);
-      const data = await res.json();
-      if (!data.error) {
-        setApps(data || []);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
-    loadApplications();
-  }, [statusFilter]);
+    let ignore = false;
+    fetch(`/api/applications?status=${statusFilter}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!ignore && !data.error) {
+          setApps(data || []);
+        }
+      })
+      .catch((err) => console.error(err))
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [statusFilter, refreshTrigger]);
 
   const handleUpdateStatus = async (id: string, newStatus: string) => {
     setUpdating(true);
@@ -61,7 +63,7 @@ export default function AdminApplicationsPage() {
         if (selectedApp?.id === id) {
           setSelectedApp({ ...selectedApp, status: newStatus });
         }
-        loadApplications();
+        setRefreshTrigger((prev) => prev + 1);
       } else {
         setToastMsg(data.error || 'Failed to update status.');
         setToastType('error');

@@ -9,6 +9,33 @@ interface RichTextEditorProps {
   onChange: (html: string) => void;
 }
 
+interface MenuButtonProps {
+  onClick: () => void;
+  isActive: boolean;
+  children: React.ReactNode;
+  title: string;
+}
+
+const MenuButton = ({
+  onClick,
+  isActive,
+  children,
+  title,
+}: MenuButtonProps) => (
+  <button
+    type="button"
+    onClick={onClick}
+    title={title}
+    className={`px-2 py-1.5 rounded text-xs font-semibold cursor-pointer transition-colors ${
+      isActive
+        ? 'bg-navy text-white'
+        : 'bg-gray-100 text-gray-750 hover:bg-navy hover:text-white'
+    }`}
+  >
+    {children}
+  </button>
+);
+
 export default function RichTextEditor({ content, onChange }: RichTextEditorProps) {
   const editor = useEditor({
     extensions: [StarterKit],
@@ -28,31 +55,6 @@ export default function RichTextEditor({ content, onChange }: RichTextEditorProp
   if (!editor) {
     return null;
   }
-
-  const MenuButton = ({
-    onClick,
-    isActive,
-    children,
-    title,
-  }: {
-    onClick: () => void;
-    isActive: boolean;
-    children: React.ReactNode;
-    title: string;
-  }) => (
-    <button
-      type="button"
-      onClick={onClick}
-      title={title}
-      className={`px-2 py-1.5 rounded text-xs font-semibold cursor-pointer transition-colors ${
-        isActive
-          ? 'bg-navy text-white'
-          : 'bg-gray-100 text-gray-750 hover:bg-navy hover:text-white'
-      }`}
-    >
-      {children}
-    </button>
-  );
 
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden flex flex-col focus-within:border-gold transition-colors">

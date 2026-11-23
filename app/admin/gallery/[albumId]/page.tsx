@@ -45,26 +45,27 @@ export default function AdminAlbumDetailPage() {
 
   const [toastMsg, setToastMsg] = useState('');
   const [toastType, setToastType] = useState<'success' | 'error'>('success');
-
-  const loadAlbumDetails = async () => {
-    if (!albumId) return;
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/gallery/${albumId}`);
-      const data = await res.json();
-      if (!data.error) {
-        setAlbum(data);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
-    loadAlbumDetails();
-  }, [albumId]);
+    if (!albumId) return;
+    let ignore = false;
+    fetch(`/api/gallery/${albumId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!ignore && !data.error) {
+          setAlbum(data);
+        }
+      })
+      .catch((err) => console.error(err))
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [albumId, refreshTrigger]);
 
   const handleUploadPhoto = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,7 +99,7 @@ export default function AdminAlbumDetailPage() {
         setFile(null);
         setCaption('');
         setPhotoUrl('');
-        loadAlbumDetails();
+        setRefreshTrigger((prev) => prev + 1);
       } else {
         setToastMsg(data.error || 'Failed to add photo.');
         setToastType('error');
@@ -123,7 +124,7 @@ export default function AdminAlbumDetailPage() {
       if (res.ok) {
         setToastMsg('Photo deleted successfully!');
         setToastType('success');
-        loadAlbumDetails();
+        setRefreshTrigger((prev) => prev + 1);
       } else {
         setToastMsg('Failed to delete photo.');
         setToastType('error');
@@ -155,7 +156,7 @@ export default function AdminAlbumDetailPage() {
         setToastMsg('Caption updated successfully!');
         setToastType('success');
         setEditingPhoto(null);
-        loadAlbumDetails();
+        setRefreshTrigger((prev) => prev + 1);
       } else {
         setToastMsg('Failed to update caption.');
         setToastType('error');
@@ -203,7 +204,7 @@ export default function AdminAlbumDetailPage() {
 
       setToastMsg('Photos reordered successfully!');
       setToastType('success');
-      loadAlbumDetails();
+      setRefreshTrigger((prev) => prev + 1);
     } catch (err) {
       console.error(err);
       setToastMsg('Failed to save order change.');
@@ -284,7 +285,7 @@ export default function AdminAlbumDetailPage() {
         </div>
       ) : (
         <div className="py-12 text-center text-gray-500 text-sm bg-white border border-gray-200 rounded-2xl shadow-sm">
-          No photos found inside this album. Click "+ Add Photo" to start uploading.
+          No photos found inside this album. Click &quot;+ Add Photo&quot; to start uploading.
         </div>
       )}
 

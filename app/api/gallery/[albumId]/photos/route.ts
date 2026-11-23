@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import cloudinary from '@/lib/cloudinary';
+import type { UploadApiResponse } from 'cloudinary';
 
 export async function POST(
   request: NextRequest,
@@ -40,12 +41,12 @@ export async function POST(
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
 
-      const result: any = await new Promise((resolve, reject) => {
+      const result = await new Promise<UploadApiResponse>((resolve, reject) => {
         cloudinary.uploader.upload_stream(
           { folder: `padmashree-gallery/${albumId}` },
           (error, res) => {
             if (error) reject(error);
-            else resolve(res);
+            else resolve(res as UploadApiResponse);
           }
         ).end(buffer);
       });
