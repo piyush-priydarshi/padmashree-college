@@ -10,15 +10,19 @@ export default function CTASection() {
     minutes: '00',
     seconds: '00'
   });
-
   useEffect(() => {
     const targetDate = new Date("August 30, 2026 00:00:00").getTime();
 
     const updateTimer = () => {
-      const now = new Date().getTime();
-      const difference = targetDate - now;
+      const difference = targetDate - Date.now();
 
-      if (difference < 0) {
+      if (difference <= 0) {
+        setTimeLeft({
+          days: '00',
+          hours: '00',
+          minutes: '00',
+          seconds: '00'
+        });
         clearInterval(timerId);
         return;
       }
@@ -36,8 +40,9 @@ export default function CTASection() {
       });
     };
 
-    updateTimer();
     const timerId = setInterval(updateTimer, 1000);
+    updateTimer();
+
     return () => clearInterval(timerId);
   }, []);
 
