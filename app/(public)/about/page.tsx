@@ -36,7 +36,7 @@ export default function AboutPage() {
               <span className="text-xs font-semibold tracking-widest text-gold uppercase">Message from the Chair</span>
               <h2 className="text-2xl md:text-3xl font-serif font-bold text-navy mt-2 mb-6">Leading with Purpose</h2>
               <p className="text-sm text-gray-600 leading-relaxed mb-4">
-                "At Padmashree College, our purpose extends beyond traditional classroom lessons. We aim to prepare students to be leaders who are technically competent and ethically grounded. Our international associations guarantee that our degrees carry global weight, giving our graduates a competitive edge in any market."
+                &ldquo;At Padmashree College, our purpose extends beyond traditional classroom lessons. We aim to prepare students to be leaders who are technically competent and ethically grounded. Our international associations guarantee that our degrees carry global weight, giving our graduates a competitive edge in any market.&rdquo;
               </p>
               <p className="text-sm font-semibold text-navy">Advisory Committee, Padmashree College</p>
             </div>
@@ -69,7 +69,7 @@ export default function AboutPage() {
               <span className="text-3xl mb-4 block">🎯</span>
               <h3 className="text-xl font-bold text-navy mb-4">Our Vision</h3>
               <p className="text-sm text-gray-600 leading-relaxed">
-                To be the most preferred educational group with high global recognition, preparing highly-skilled resources to lead and innovate within tomorrow's industrial markets.
+                To be the most preferred educational group with high global recognition, preparing highly-skilled resources to lead and innovate within tomorrow&apos;s industrial markets.
               </p>
             </div>
             <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">

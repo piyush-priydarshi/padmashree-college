@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -8,7 +9,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const admin = searchParams.get('admin') === 'true';
 
-    const where: any = {};
+    const where: Prisma.TestimonialWhereInput = {};
     if (!admin) {
       where.published = true;
     } else {

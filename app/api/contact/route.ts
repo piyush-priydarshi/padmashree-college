@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { sendMail } from '@/lib/email';
+import { escapeHtml } from '@/lib/security';
 
 export async function GET(request: NextRequest) {
   try {
@@ -42,19 +43,25 @@ export async function POST(request: NextRequest) {
 
     try {
       const adminEmail = process.env.ADMIN_EMAIL || 'admin@padmashreecollege.edu.np';
+      const cleanSubject = subject.replace(/[\r\n]+/g, ' ').trim();
+      const safeName = escapeHtml(name);
+      const safeEmail = escapeHtml(email);
+      const safePhone = escapeHtml(phone || 'N/A');
+      const safeMessage = escapeHtml(message).replace(/\n/g, '<br/>');
+
       await sendMail({
         to: adminEmail,
-        subject: `New Contact Inquiry: ${subject}`,
+        subject: `New Contact Inquiry: ${cleanSubject}`,
         html: `
           <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
             <h2 style="color: #0A1628;">New Contact Inquiry Received</h2>
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Phone:</strong> ${phone || 'N/A'}</p>
-            <p><strong>Subject:</strong> ${subject}</p>
+            <p><strong>Name:</strong> ${safeName}</p>
+            <p><strong>Email:</strong> ${safeEmail}</p>
+            <p><strong>Phone:</strong> ${safePhone}</p>
+            <p><strong>Subject:</strong> ${escapeHtml(cleanSubject)}</p>
             <p><strong>Message:</strong></p>
             <div style="background: #F0F2F7; padding: 15px; border-radius: 8px;">
-              ${message.replace(/\n/g, '<br/>')}
+              ${safeMessage}
             </div>
           </div>
         `,

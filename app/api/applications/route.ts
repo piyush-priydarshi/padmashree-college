@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { sendMail } from '@/lib/email';
+import { escapeHtml, isValidEmail } from '@/lib/security';
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,7 +16,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status') || '';
 
-    const where: any = {};
+    const where: Prisma.ApplicationWhereInput = {};
     if (status && status !== 'all') {
       where.status = status;
     }
@@ -39,6 +41,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
+    if (!isValidEmail(email)) {
+      return NextResponse.json({ error: 'Invalid email address format' }, { status: 400 });
+    }
+
     const application = await prisma.application.create({
       data: {
         fullName,
@@ -51,14 +57,17 @@ export async function POST(request: NextRequest) {
     });
 
     try {
+      const safeFullName = escapeHtml(fullName);
+      const safeProgram = escapeHtml(program);
+
       await sendMail({
         to: email,
         subject: 'Application Received - Padmashree College',
         html: `
           <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
             <h2 style="color: #0A1628;">Application Received</h2>
-            <p>Dear ${fullName},</p>
-            <p>Thank you for applying for the <strong>${program}</strong> program at Padmashree College, Tinkune, Kathmandu.</p>
+            <p>Dear ${safeFullName},</p>
+            <p>Thank you for applying for the <strong>${safeProgram}</strong> program at Padmashree College, Tinkune, Kathmandu.</p>
             <p>Our admissions desk will review your credentials and contact you within the next 2-3 business days.</p>
             <p>If you have any urgent queries, feel free to call us at +977 1-4112252.</p>
             <br/>

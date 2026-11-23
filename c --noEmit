@@ -1,0 +1,27 @@
+ app/(public)/about/page.tsx               |  4 [32m+[m[31m--[m
+ app/(public)/news/[slug]/page.tsx         |  2 [32m+[m[31m-[m
+ app/(public)/news/page.tsx                | 12 [32m+++++[m[31m--[m
+ app/admin/applications/page.tsx           | 36 [32m+++++++++++[m[31m----------[m
+ app/admin/events/page.tsx                 | 41 [32m++++++++++++[m[31m------------[m
+ app/admin/gallery/[albumId]/page.tsx      | 45 [32m+++++++++++++[m[31m-------------[m
+ app/admin/gallery/page.tsx                | 41 [32m++++++++++++[m[31m------------[m
+ app/admin/news/page.tsx                   | 41 [32m++++++++++++[m[31m------------[m
+ app/admin/newsletter/page.tsx             | 39 [32m++++++++++++[m[31m-----------[m
+ app/admin/testimonials/page.tsx           | 41 [32m++++++++++++[m[31m------------[m
+ app/api/applications/route.ts             |  3 [32m+[m[31m-[m
+ app/api/events/route.ts                   |  3 [32m+[m[31m-[m
+ app/api/gallery/[albumId]/photos/route.ts |  5 [32m+[m[31m--[m
+ app/api/gallery/route.ts                  |  5 [32m+[m[31m--[m
+ app/api/news/[id]/route.ts                |  6 [32m++[m[31m--[m
+ app/api/news/route.ts                     |  6 [32m++[m[31m--[m
+ app/api/testimonials/route.ts             |  3 [32m+[m[31m-[m
+ app/api/upload/route.ts                   |  5 [32m+[m[31m--[m
+ components/home/AboutSection.tsx          |  2 [32m+[m[31m-[m
+ components/home/Hero.tsx                  | 17 [32m++++++++[m[31m--[m
+ components/home/StatsCounter.tsx          |  1 [31m-[m
+ components/ui/RichTextEditor.tsx          | 52 [32m++++++++++++++++[m[31m---------------[m
+ hooks/useReveal.ts                        |  2 [32m+[m[31m-[m
+ lib/auth.ts                               | 13 [32m+++++++[m[31m-[m
+ lib/prisma.ts                             |  4 [31m---[m
+ package.json                              |  2 [32m+[m[31m-[m
+ 26 files changed, 235 insertions(+), 196 deletions(-)

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -9,7 +10,7 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category') || '';
     const admin = searchParams.get('admin') === 'true';
 
-    const where: any = {};
+    const where: Prisma.EventWhereInput = {};
     if (category && category !== 'all') {
       where.category = category;
     }

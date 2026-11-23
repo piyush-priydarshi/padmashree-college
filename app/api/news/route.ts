@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { NewsCategory } from '@prisma/client';
+import { NewsCategory, Prisma } from '@prisma/client';
+import { sanitizeHtml } from '@/lib/security';
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,7 +14,7 @@ export async function GET(request: NextRequest) {
     const admin = searchParams.get('admin') === 'true';
 
     const skip = (page - 1) * limit;
-    const where: any = {};
+    const where: Prisma.NewsWhereInput = {};
 
     if (categoryQuery && categoryQuery.toUpperCase() !== 'ALL') {
       let mappedCategory: NewsCategory | null = null;
@@ -95,7 +96,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate unique slug
-    let baseSlug = title
+    const baseSlug = title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)+/g, '');
@@ -110,7 +111,7 @@ export async function POST(request: NextRequest) {
       data: {
         title,
         slug,
-        content,
+        content: sanitizeHtml(content),
         excerpt: excerpt || null,
         coverImage: coverImage || null,
         category: parsedCategory,

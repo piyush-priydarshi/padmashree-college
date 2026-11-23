@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Card } from '@/components/ui/Card';
+import { sanitizeHtml } from '@/lib/security';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -82,7 +83,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
           )}
           <div 
             className="text-sm text-gray-750 leading-relaxed whitespace-pre-wrap rich-text-content"
-            dangerouslySetInnerHTML={{ __html: article.content }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(article.content) }}
           />
         </div>
 
@@ -90,7 +91,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
           <div className="border-t border-gray-150 pt-12 mt-12 text-left">
             <h3 className="text-lg font-bold text-navy mb-6">Related Publications</h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              {related.map((item: any) => (
+              {related.map((item) => (
                 <Card key={item.id} className="p-0 overflow-hidden flex flex-col hover:-translate-y-1 transition-all duration-300 border border-gray-200 bg-white" hoverable={false}>
                   <div className="h-32 bg-navy-light/10 flex items-center justify-center text-4xl select-none overflow-hidden relative">
                     {item.coverImage ? (

@@ -36,25 +36,26 @@ export default function AdminTestimonialsPage() {
   const [toastMsg, setToastMsg] = useState('');
   const [toastType, setToastType] = useState<'success' | 'error'>('success');
   const [submitting, setSubmitting] = useState(false);
-
-  const loadTestimonials = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch('/api/testimonials?admin=true');
-      const data = await res.json();
-      if (!data.error) {
-        setTestimonials(data || []);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
-    loadTestimonials();
-  }, []);
+    let ignore = false;
+    fetch('/api/testimonials?admin=true')
+      .then((res) => res.json())
+      .then((data) => {
+        if (!ignore && !data.error) {
+          setTestimonials(data || []);
+        }
+      })
+      .catch((err) => console.error(err))
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [refreshTrigger]);
 
   const handleOpenCreate = () => {
     setEditingItem(null);
@@ -92,7 +93,7 @@ export default function AdminTestimonialsPage() {
       if (res.ok) {
         setToastMsg('Published status updated!');
         setToastType('success');
-        loadTestimonials();
+        setRefreshTrigger((prev) => prev + 1);
       } else {
         setToastMsg('Failed to update published status.');
         setToastType('error');
@@ -111,7 +112,7 @@ export default function AdminTestimonialsPage() {
       if (res.ok) {
         setToastMsg('Testimonial deleted successfully!');
         setToastType('success');
-        loadTestimonials();
+        setRefreshTrigger((prev) => prev + 1);
       } else {
         setToastMsg('Failed to delete testimonial.');
         setToastType('error');
@@ -146,7 +147,7 @@ export default function AdminTestimonialsPage() {
         setToastMsg(editingItem ? 'Testimonial updated successfully!' : 'Testimonial created successfully!');
         setToastType('success');
         setIsModalOpen(false);
-        loadTestimonials();
+        setRefreshTrigger((prev) => prev + 1);
       } else {
         setToastMsg(data.error || 'Failed to save testimonial.');
         setToastType('error');

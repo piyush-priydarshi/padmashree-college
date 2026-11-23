@@ -4,11 +4,19 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
+interface Particle {
+  id: number;
+  size: number;
+  delay: number;
+  duration: number;
+  left: number;
+}
+
 export default function Hero() {
-  const [particles, setParticles] = useState<any[]>([]);
+  const [particles, setParticles] = useState<Particle[]>([]);
 
   useEffect(() => {
-    const arr = [];
+    const arr: Particle[] = [];
     for (let i = 0; i < 18; i++) {
       arr.push({
         id: i,
@@ -18,7 +26,10 @@ export default function Hero() {
         left: Math.random() * 100,
       });
     }
-    setParticles(arr);
+    const timer = setTimeout(() => {
+      setParticles(arr);
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   return (

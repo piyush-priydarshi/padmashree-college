@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { sendMail } from '@/lib/email';
+import { escapeHtml } from '@/lib/security';
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,16 +30,19 @@ export async function POST(request: NextRequest) {
     let successCount = 0;
     let failCount = 0;
 
+    const cleanSubject = subject.replace(/[\r\n]+/g, ' ').trim();
+    const safeMessage = escapeHtml(message).replace(/\n/g, '<br/>');
+
     for (const sub of subscribers) {
       try {
         await sendMail({
           to: sub.email,
-          subject,
+          subject: cleanSubject,
           html: `
             <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; line-height: 1.6;">
               <h2 style="color: #0A1628;">Padmashree Newsletter</h2>
-              <div style="font-size: 14px; margin-bottom: 20px; white-space: pre-wrap;">
-                ${message}
+              <div style="font-size: 14px; margin-bottom: 20px;">
+                ${safeMessage}
               </div>
               <hr style="border: none; border-top: 1px solid #eee; margin-top: 30px;" />
               <p style="font-size: 11px; color: #888;">
